@@ -1,7 +1,4 @@
 import { useState, useEffect } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
 import { supabase } from './lib/supabase'
 import './App.css'
 
@@ -9,6 +6,7 @@ function App() {
   const [totalRegions, setTotalRegions] = useState(0)
   const [totalWorkers, setTotalWorkers] = useState(0)
   const [totalAlerts, setTotalAlerts] = useState(0)
+  const [alerts, setAlerts] = useState([])
 
   
   useEffect(() => {
@@ -16,11 +14,7 @@ function App() {
     // grab total number of regions
     async function getRegions() {
 
-      const { data, error } = await supabase
-        .rpc('total_regions')
-
-        console.log('data:', data)
-        console.log('error:', error)
+      const { data, error } = await supabase.rpc('total_regions')
 
       if (error) {
         console.error(error)
@@ -33,11 +27,7 @@ function App() {
     // grab total number of workers
     async function getWorkers() {
 
-      const { data, error } = await supabase
-        .rpc('total_names')
-
-        console.log('data:', data)
-        console.log('error:', error)
+      const { data, error } = await supabase.rpc('total_names')
 
       if (error) {
         console.error(error)
@@ -50,11 +40,7 @@ function App() {
     // grab total number of alerts over the week
     async function getAlerts() {
 
-      const { data, error } = await supabase
-        .rpc('total_alerts_week')
-
-        console.log('data:', data)
-        console.log('error:', error)
+      const { data, error } = await supabase.rpc('total_alerts_weekly')
 
       if (error) {
         console.error(error)
@@ -64,11 +50,39 @@ function App() {
       setTotalAlerts(data)
     }
 
+    // grab alert rows
+    async function getAlertRows() {
+
+      const { data, error } = await supabase
+        .from('alerts')
+        .select(`
+          uuid,
+          time_stamp,
+          type,
+          users (
+            name,
+            region
+          )
+        `)
+        .gte('time_stamp', new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString())
+        .order('time_stamp', { ascending: false })
+        .limit(10)
+
+      if (error) {
+        console.error(error)
+        return
+      }
+
+      setAlerts(data)
+    }
+
 
 
     getRegions()
     getWorkers()
     getAlerts()
+
+    getAlertRows() 
 
   }, [])
 
@@ -84,7 +98,7 @@ function App() {
 
       {/* header */}
       <nav>
-        <a className="nav-name" href="#introduction">
+        <a className="nav-name" href="/">
             DEP-Dashboard
         </a>
       </nav>
@@ -96,24 +110,51 @@ function App() {
       {/* cards */}
       <section className='cards-grid'>
 
-        <div className='card'>
+        <a className='card button'>
           <h2>Total Regions</h2>
           <p>{totalRegions}</p>
-        </div>
+        </a>
 
-        <div className='card'>
+        <a className='card button' href='/workers'>
           <h2>Total Workers</h2>
           <p>{totalWorkers}</p>
-        </div>
+        </a>
 
-        <div className='card'>
+        <a className='card button'>
           <h2>Total Alerts</h2>
           <p>{totalAlerts}</p>
-        </div>
+        </a>
 
       </section>
 
+      {/* recent alerts */}
+      <section>
+        <h1>Recent Alerts</h1>
 
+        <table className='alerts-grid'>
+          <thead>
+            <tr>
+              <th>Worker</th>
+              <th>Region</th>
+              <th>Time Stamp</th>
+              <th>Alert Type</th>
+            </tr>
+          </thead>
+
+        
+          <tbody>
+            {alerts.map((alert) => (
+              <tr key={alert.uuid}>
+                <td>{alert.users.name}</td>
+                <td>{alert.users.region}</td>
+                <td>{new Date(alert.time_stamp).toLocaleString('en-SG')}</td>
+                <td>{alert.type}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+
+      </section>
 
       
     </main>
