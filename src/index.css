@@ -1,0 +1,47 @@
+:root {
+  --background: #0b0d0f;
+  --panel: #111417;
+  --panel-2: #15191d;
+  --border: #272c31;
+  --text: #f1f3f5;
+  --muted: #8b949e;
+  --accent: #7dd3fc;
+  --green: #86efac;
+  --purple: #c4b5fd;
+  --orange: #fdba74;
+  --red: #ea4335;
+  --pink: #e1306c;
+  --blurple: #5865f2;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--text);
+  font-family: "Inter", sans-serif;
+  line-height: 1.6;
+}
+
+nav {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 6%;
+  border-bottom: 1px solid var(--border);
+  background-color: var(--panel);
+  backdrop-filter: blur(14px);
+}
+
+        
