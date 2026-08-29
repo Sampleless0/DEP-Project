@@ -1,8 +1,11 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
 import './Workers.css'
+import { useNavigate } from 'react-router-dom'
 
 function Workers() {
+  const navigate = useNavigate()
+
   const [workers, setWorkers] = useState([])
 
   
@@ -76,7 +79,7 @@ function Workers() {
 
                 <tbody>
                 {workers.map((worker) => (
-                    <tr key={worker.uuid}>
+                    <tr key={worker.uuid} onClick={() => navigate(`/worker/${worker.uuid}`)} className='button'>
                     <td>{worker.name}</td>
                     <td>{worker.uuid}</td>
                     </tr>

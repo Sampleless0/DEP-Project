@@ -1,0 +1,8 @@
+.regions-grid {
+  padding: 25px;
+  margin: 30px 6%;
+  width: 88%;
+  border: 1px solid var(--border);
+  background-color: var(--panel);
+  text-align: left;
+}

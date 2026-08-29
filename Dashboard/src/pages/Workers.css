@@ -1,6 +1,6 @@
 .workers-grid {
   padding: 25px;
-  margin: 0px 6%;
+  margin: 30px 6%;
   width: 88%;
   border: 1px solid var(--border);
   background-color: var(--panel);
@@ -13,4 +13,15 @@ table {
 
 td {
     width: 50%;
+}
+
+.button {
+  transition: 0.2s;
+  text-decoration: none;
+  color: var(--text);
+}
+
+.button:hover {
+  background-color: #48515a;
+  transform: none;
 }

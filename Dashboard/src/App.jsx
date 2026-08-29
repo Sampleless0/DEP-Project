@@ -110,7 +110,7 @@ function App() {
       {/* cards */}
       <section className='cards-grid'>
 
-        <a className='card button'>
+        <a className='card button' href='/regions'>
           <h2>Total Regions</h2>
           <p>{totalRegions}</p>
         </a>
@@ -120,8 +120,8 @@ function App() {
           <p>{totalWorkers}</p>
         </a>
 
-        <a className='card button'>
-          <h2>Total Alerts</h2>
+        <a className='card button' href='/alerts'>
+          <h2>Recent Alerts</h2>
           <p>{totalAlerts}</p>
         </a>
 
