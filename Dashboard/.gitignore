@@ -3,3 +3,4 @@ dist
 .env.local
 reference.html
 .vite
+.vscode
