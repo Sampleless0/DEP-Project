@@ -14,7 +14,6 @@ function Alerts() {
       const { data, error } = await supabase
         .from('alerts')
         .select(`
-          uuid,
           time_stamp,
           type,
           users (

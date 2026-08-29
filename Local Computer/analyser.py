@@ -122,6 +122,19 @@ class Tracker:
             response=True
         )
 
+    async def send_alert(self, alert):
+
+        if not self.client:
+            return
+
+        message = f"{alert},{self.name}"
+
+        await self.client.write_gatt_char(
+            alert_characteristic_uuid,
+            message.encode("utf-8"),
+            response=True
+        )
+
     def analyse_packet(self, window):
         # merge both parts first
         merged_window = [value for one_window in window for value in one_window]
@@ -133,6 +146,34 @@ class Tracker:
         x_test = (process_window - mean) / std
 
         prediction = model.predict(x_test, verbose = 0)
+
+        predicted_class = int(np.argmax(prediction[0]))
+
+        classes = [
+            "normal",
+            "near_fall",
+            "fall"
+        ]
+
+        alert = classes[predicted_class]
+
+        if alert == "fall":
+            asyncio.create_task(
+                self.send_alert("fall")
+            )
+
+            asyncio.create_task(
+                self.upload_alert("fall", window)
+            )
+
+        elif alert == "near_fall":
+            asyncio.create_task(
+                self.send_alert("near_fall")
+            )
+
+            asyncio.create_task(
+                self.upload_alert("near_fall", window)
+            )
 
         
     async def upload_packet(self, window):
@@ -161,6 +202,36 @@ class Tracker:
             ).insert(rows).execute()
         except Exception as e:
             print(e)
+
+    async def upload_alert(self, alert_type, window):
+
+        now = datetime.now(timezone.utc)
+
+        rows = {
+            'device_uuid': self.uuid,
+            'time_stamp': now.isoformat(),
+            'type': alert_type,
+            'logs': {
+                'samples': [
+                    {
+                        'ax': float(sample[0]),
+                        'ay': float(sample[1]),
+                        'az': float(sample[2]),
+                        'gx': float(sample[3]),
+                        'gy': float(sample[4]),
+                        'gz': float(sample[5])
+                    }
+                    for sample in window
+                ]
+            }
+        }
+
+        try:
+            supabase.table('alerts').insert(rows).execute()
+
+        except Exception as e:
+            print(e)
+
 
 
 
@@ -228,5 +299,7 @@ async def main():
     ]
 
     await asyncio.gather(*tasks)
+
+
 
 asyncio.run(main())
