@@ -103,7 +103,7 @@ function App() {
       </nav>
 
       {/* dropdown (user) */}
-      <h1>hello</h1>
+      <h1>DEP-Dashboard Main Page</h1>
 
 
       {/* cards */}

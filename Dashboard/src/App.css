@@ -78,3 +78,7 @@ td {
   padding: 14px 18px;
   border: 1px solid var(--border);
 }
+
+h1 {
+  margin: 10px 6%;
+}

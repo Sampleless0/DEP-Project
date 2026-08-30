@@ -46,6 +46,9 @@ function Worker() {
             Date.now() - 10 * 60 * 1000
         ).toISOString()
 
+        console.log("URL uuid:", uuid)
+        console.log("movement query start:", ten_minutes)
+
         const { data, error } = await supabase
             .from('logs')
             .select('time_stamp, gyro_x, gyro_y, gyro_z, acc_x, acc_y, acc_z')
@@ -64,6 +67,7 @@ function Worker() {
 
     getWorker()
     getMovement()
+    
 
     }, [uuid])
 
@@ -76,6 +80,9 @@ function Worker() {
             second: '2-digit'
         })
     }))
+
+    console.log("movement:", movement)
+    console.log("chartData:", chartData)
 
     if (!worker) {
         return <p>Loading...</p>
@@ -96,39 +103,86 @@ function Worker() {
       <section>
         <h1>{worker.name}</h1>
 
-        <ResponsiveContainer width="100%" height={300}>
-            <LineChart data={chartData}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="time" />
-                <YAxis />
-                <Tooltip />
-                <Legend />
+        <div className='graph-grid'>
 
-                <Line
-                    type="monotone"
-                    dataKey="ax"
-                    name="X"
-                    dot={false}
-                />
+            <div className='graph-box'>
+                <h2>Acceleration</h2>
+                <ResponsiveContainer width="100%" height={300}>
+                    <LineChart data={chartData}>
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="time" />
+                        <YAxis />
+                        <Tooltip />
+                        <Legend />
 
-                <Line
-                    type="monotone"
-                    dataKey="ay"
-                    name="Y"
-                    dot={false}
-                />
+                        <Line
+                            type="monotone"
+                            dataKey="acc_x"
+                            name="X"
+                            stroke='#ea4335'
+                            dot={false}
+                        />
 
-                <Line
-                    type="monotone"
-                    dataKey="az"
-                    name="Z"
-                    dot={false}
-                />
+                        <Line
+                            type="monotone"
+                            dataKey="acc_y"
+                            name="Y"
+                            stroke='#86efac'
+                            dot={false}
+                        />
 
-            </LineChart>
+                        <Line
+                            type="monotone"
+                            dataKey="acc_z"
+                            name="Z"
+                            stroke='#7dd3fc'
+                            dot={false}
+                    />
 
-        </ResponsiveContainer>
-        
+                </LineChart>
+
+                </ResponsiveContainer>
+            </div>
+
+            <div className='graph-box'>
+                <h2>Gyroscope</h2>
+                <ResponsiveContainer width="100%" height={300}>
+                    <LineChart data={chartData}>
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="time" />
+                        <YAxis />
+                        <Tooltip />
+                        <Legend />
+
+                        <Line
+                            type="monotone"
+                            dataKey="gyro_x"
+                            name="X"
+                            stroke='#ea4335'
+                            dot={false}
+                        />
+
+                        <Line
+                            type="monotone"
+                            dataKey="gyro_y"
+                            name="Y"
+                            stroke='#86efac'
+                            dot={false}
+                        />
+
+                        <Line
+                            type="monotone"
+                            dataKey="gyro_z"
+                            name="Z"
+                            stroke='#7dd3fc'
+                            dot={false}
+                        />
+
+                    </LineChart>
+
+                </ResponsiveContainer>
+            </div>
+        </div>
 
       </section>
 

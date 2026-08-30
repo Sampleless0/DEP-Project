@@ -1,0 +1,13 @@
+.graph-grid {
+    margin: 0px 6%;
+    display: flex;
+    align-content: center;
+    justify-content: space-between
+}
+
+.graph-box {
+    width: 48%;
+    padding: 20px;
+    background-color: var(--panel);
+    border: 1px solid var(--border);
+}
